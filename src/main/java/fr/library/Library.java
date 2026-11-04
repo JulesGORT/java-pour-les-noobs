@@ -1,5 +1,8 @@
 package fr.library;
 
+import fr.library.exceptions.BookNotFoundException;
+import fr.library.exceptions.DuplicateBookException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +11,8 @@ public class Library {
 
     private final List<Book> books = new ArrayList<>();
 
-    public void addBook(Book book) throws Exception {
-        if(this.containsIsbn(book.getIsbn())) throw new Exception("y a deja cet ISBN " + book.getIsbn());
+    public void addBook(Book book){
+        if(this.containsIsbn(book.getIsbn())) throw new DuplicateBookException(book.getIsbn());
         this.books.add(book);
     }
 
@@ -20,7 +23,7 @@ public class Library {
         }
     }
 
-    public Optional<Book> findBookByTitle(String title) {
+    public Book findBookByTitle(String title) {
         /*
         Book bookResult = null;
         for(Book book : books){
@@ -35,11 +38,12 @@ public class Library {
 
         return books.stream()
                 .filter(book -> book.getTitle().equals(title))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new BookNotFoundException("y a pas de book a ce titre : " + title));
     }
 
-    public void removeBook(String isbn) throws ClassNotFoundException {
-        Book book = this.findByIsbn(isbn).orElseThrow(() -> new ClassNotFoundException("book non trouvé pour l'isbn : " + isbn));
+    public void removeBook(String isbn){
+        Book book = this.findByIsbn(isbn).orElseThrow(() -> new BookNotFoundException("book non trouvé pour l'isbn : " + isbn));
         books.remove(book);
     }
 

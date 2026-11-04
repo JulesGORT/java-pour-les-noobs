@@ -11,7 +11,7 @@ public class Book {
 
     public Book(String isbn, String title, String author, int year) {
         if(!verifyIsbn(isbn)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("ISBN n'as pas le bon format");
         }
         this.isbn = isbn;
         this.title = title;
@@ -57,17 +57,16 @@ public class Book {
             return false;
         }
 
-        if (obj.getClass() != this.getClass()) {
+        if (!(obj instanceof Book other)) {
             return false;
         }
 
-        Book book = (Book) obj;
-        return Objects.equals(this.isbn, book.isbn);
+        return Objects.equals(this.isbn, other.isbn);
     }
 
     @Override
     public int hashCode(){
-        return Integer.parseInt(this.isbn);
+        return this.isbn.hashCode();
     }
 
     @Override
